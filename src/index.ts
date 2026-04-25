@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import { loadFleetConfig, FleetConfigError } from './config'
 import { enroll, EnrollError } from './enroll'
+import type { TickDeps } from './tick'
 
 const TEMPLATES_ROOT = resolve(import.meta.dir, '..', 'templates')
 
@@ -55,8 +56,52 @@ async function main() {
   }
 
   if (cmd === 'tick') {
-    console.error('tick: not yet implemented (Stage 2.2)')
-    process.exit(2)
+    const { default: Anthropic } = await import('@anthropic-ai/sdk')
+    const { spawnSync } = await import('node:child_process')
+    const { tickOne } = await import('./tick')
+    const filter = rest[0]
+    const entries = filter ? cfg.fleet.filter((e) => e.name === filter) : cfg.fleet
+    if (entries.length === 0) {
+      console.error(`no fleet entries match: ${filter}`)
+      process.exit(1)
+    }
+    const apiKey = process.env['ANTHROPIC_API_KEY']
+    if (!apiKey) {
+      console.error('ANTHROPIC_API_KEY not set')
+      process.exit(4)
+    }
+    const client = new Anthropic({ apiKey })
+    let anyError = false
+    for (const entry of entries) {
+      try {
+        const result = await tickOne(entry, {
+          anthropic: client as unknown as TickDeps['anthropic'],
+          exec: (c) => {
+            // shell:true is safe because src/sandbox.ts rejects shell metachars
+            // (|&;<>(){}\\$`) before we get here.
+            const r = spawnSync(c, { shell: true, encoding: 'utf8' })
+            return {
+              stdout: typeof r.stdout === 'string' ? r.stdout : '',
+              stderr: typeof r.stderr === 'string' ? r.stderr : '',
+              code: r.status ?? -1,
+            }
+          },
+          now: () => new Date(),
+        })
+        if (result.outcome === 'issue-created') {
+          console.log(`tick ${entry.name}: issue-created ${result.url}`)
+        } else if (result.outcome === 'no-findings') {
+          console.log(`tick ${entry.name}: no-findings`)
+        } else {
+          anyError = true
+          console.log(`tick ${entry.name}: error ${result.message}`)
+        }
+      } catch (err) {
+        anyError = true
+        console.log(`tick ${entry.name}: error ${(err as Error).message}`)
+      }
+    }
+    process.exit(anyError ? 1 : 0)
   }
 
   usage()
