@@ -1,0 +1,8 @@
+node_modules/
+agent-fleet
+agent-fleet.exe
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store

@@ -1,0 +1,30 @@
+{
+  "name": "agent-fleet",
+  "version": "0.0.0",
+  "description": "Autonomous OSS-repo health for solo maintainers",
+  "type": "module",
+  "bin": {
+  "agent-fleet": "./src/index.ts"
+},
+"scripts": {
+  "test": "bun test",
+  "build": "bun build --compile --outfile agent-fleet src/index.ts",
+  "lint": "biome check src tests"
+},
+"dependencies": {
+  "@anthropic-ai/sdk": "^0.40.0",
+  "js-yaml": "^4.1.0",
+  "mustache": "^4.2.0",
+  "zod": "^3.24.0"
+},
+"devDependencies": {
+  "@biomejs/biome": "^1.9.0",
+  "@types/js-yaml": "^4.0.9",
+  "@types/mustache": "^4.2.5",
+  "bun-types": "latest"
+},
+"license": "Apache-2.0",
+"trustedDependencies": [
+  "@biomejs/biome"
+]
+}
