@@ -2,7 +2,7 @@
 
 > One config, one cron, N OSS repos kept reviewed, dep-current, and release-ready. Single Bun binary. No daemon. No DB.
 
-**Status:** v0.0.0 — under construction. See [SCOPE.md](./SCOPE.md), [SPEC.md](./SPEC.md), [docs/superpowers/specs/](./docs/superpowers/specs/).
+**Status:** v0.1.0 — see [CHANGELOG.md](./CHANGELOG.md), [SPEC.md](./SPEC.md), [SCOPE.md](./SCOPE.md).
 
 ## What it does
 
@@ -13,16 +13,24 @@ Two thin commands across a YAML-listed fleet of TS+Bun OSS repos:
 
 That's the whole product.
 
-## Quickstart (target shape, not yet implemented)
+## Quickstart
 
 ```bash
 bun install
-$EDITOR fleet.yaml          # list your repos
-bun run agent-fleet enroll agent-id    # install standard kit into ../agent-id
-bun run agent-fleet tick               # one issue per enrolled repo
+cp fleet.yaml.example fleet.yaml && $EDITOR fleet.yaml   # list your repos
+bun run examples/demo.ts                                  # try the scaffold half (no API keys needed)
+bun run src/index.ts enroll agent-id                      # install the kit into ../agent-id
+ANTHROPIC_API_KEY=... GH_TOKEN=... bun run src/index.ts tick   # weekly health check
 ```
 
-Then push `agent-fleet` to GitHub and add `ANTHROPIC_API_KEY` + a fine-grained `GH_TOKEN` as Actions secrets. The bundled `tick.yml` workflow runs every Monday at 09:00 UTC.
+For autonomous operation, push agent-fleet to GitHub and add `ANTHROPIC_API_KEY` + a fine-grained `AGENT_FLEET_PAT` (see [docs/security/S2-pat-scope.md](./docs/security/S2-pat-scope.md)) as Actions secrets. The bundled `tick.yml` cron runs every Monday at 09:00 UTC.
+
+To produce a single binary:
+
+```bash
+bun build --compile --outfile agent-fleet src/index.ts
+./agent-fleet enroll agent-id
+```
 
 ## What it is NOT
 

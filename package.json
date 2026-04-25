@@ -1,6 +1,6 @@
 {
   "name": "agent-fleet",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Autonomous OSS-repo health for solo maintainers",
   "type": "module",
   "bin": { "agent-fleet": "./src/index.ts" },
