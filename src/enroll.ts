@@ -7,7 +7,6 @@ import {
   existsSync,
 } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
-import Mustache from 'mustache'
 import type { FleetEntry } from './config'
 
 export class EnrollError extends Error {
@@ -35,13 +34,14 @@ export function enroll(entry: FleetEntry, templatesRoot: string): { written: str
   if (!existsSync(tplDir)) {
     throw new EnrollError(`template not found: ${entry.template} (looked in ${tplDir})`)
   }
-  const vars = { name: entry.name, repo: entry.repo }
+  const vars: Record<string, string> = { name: entry.name, repo: entry.repo }
   const written: string[] = []
   for (const src of walk(tplDir)) {
     const rel = relative(tplDir, src)
     const dest = join(entry.path, rel)
     const raw = readFileSync(src, 'utf8')
-    const rendered = Mustache.render(raw, vars)
+    let rendered = raw
+    for (const [k, v] of Object.entries(vars)) rendered = rendered.replaceAll(`{{${k}}}`, v)
     mkdirSync(dirname(dest), { recursive: true })
     writeFileSync(dest, rendered)
     written.push(rel)

@@ -55,4 +55,33 @@ describe('enroll', () => {
       expect(result.written).toContain('renovate.json')
     })
   })
+
+  test('writes all 5 kit files (per SPEC §2.2)', () => {
+    withTmpDir((dir) => {
+      enroll({ ...sampleEntry, path: dir }, TEMPLATES_ROOT)
+      const expected = [
+        'renovate.json',
+        'release-please-config.json',
+        '.github/workflows/ci.yml',
+        '.github/workflows/claude-review.yml',
+        '.github/workflows/release-please.yml',
+      ]
+      for (const rel of expected) {
+        expect(existsSync(join(dir, rel))).toBe(true)
+      }
+    })
+  })
+
+  test('renders {{name}} and {{repo}} mustache vars', () => {
+    withTmpDir((dir) => {
+      enroll({ ...sampleEntry, path: dir }, TEMPLATES_ROOT)
+      const ciYaml = readFileSync(join(dir, '.github/workflows/ci.yml'), 'utf8')
+      expect(ciYaml).toContain('--outfile agent-id')
+      expect(ciYaml).not.toContain('{{name}}')
+      const review = readFileSync(join(dir, '.github/workflows/claude-review.yml'), 'utf8')
+      expect(review).toContain('repo: p-vbordei/agent-id')
+      const rpConfig = JSON.parse(readFileSync(join(dir, 'release-please-config.json'), 'utf8'))
+      expect(rpConfig.packages['.']['package-name']).toBe('agent-id')
+    })
+  })
 })
