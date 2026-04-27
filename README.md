@@ -2,7 +2,7 @@
 
 > One config, one cron, N OSS repos kept reviewed, dep-current, and release-ready. Single Bun binary. No daemon. No DB.
 
-**Status:** v0.1.0 — see [CHANGELOG.md](./CHANGELOG.md), [SPEC.md](./SPEC.md), [SCOPE.md](./SCOPE.md).
+**Status:** v0.1.1 — see [CHANGELOG.md](./CHANGELOG.md), [SPEC.md](./SPEC.md), [SCOPE.md](./SCOPE.md). On npm as **`agent-fleetctl`** (the unscoped name `agent-fleet` was taken). Binary name remains `agent-fleet`.
 
 ## What it does
 

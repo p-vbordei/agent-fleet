@@ -4,6 +4,11 @@ All notable changes to agent-fleet will be documented in this file. Format follo
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-04-27
+
+### Changed
+- **npm package renamed from `agent-fleet` to `agent-fleetctl`**. The unscoped name `agent-fleet` was already taken on the npm registry by an unrelated project. The GitHub repo (`p-vbordei/agent-fleet`) and the installed binary (`agent-fleet`) keep their names. To install: `npm i -g agent-fleetctl`.
+
 ## [0.1.0] - 2026-04-25
 
 ### Added
