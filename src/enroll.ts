@@ -46,5 +46,19 @@ export function enroll(entry: FleetEntry, templatesRoot: string): { written: str
     writeFileSync(dest, rendered)
     written.push(rel)
   }
+  // Bootstrap release-please manifest from target's current package.json version.
+  // release-please-action requires this file to exist; it does not auto-create.
+  const pkgPath = join(entry.path, 'package.json')
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
+      const version = typeof pkg.version === 'string' ? pkg.version : '0.0.0'
+      const manifestPath = join(entry.path, '.release-please-manifest.json')
+      writeFileSync(manifestPath, `${JSON.stringify({ '.': version }, null, 2)}\n`)
+      written.push('.release-please-manifest.json')
+    } catch {
+      // tolerate package.json read/parse failure; release-please will fail informatively
+    }
+  }
   return { written }
 }

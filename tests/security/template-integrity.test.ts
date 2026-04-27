@@ -12,7 +12,7 @@ test('S5 — enroll never invokes fetch', () => {
   globalThis.fetch = (() => {
     fetchCalled = true
     throw new Error('S5 violation: enroll attempted fetch')
-  }) as typeof fetch
+  }) as unknown as typeof fetch
   const dir = mkdtempSync(join(tmpdir(), 's5-'))
   try {
     enroll(

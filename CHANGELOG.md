@@ -4,6 +4,14 @@ All notable changes to agent-fleet will be documented in this file. Format follo
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-04-27
+
+### Fixed
+- **enroll now bootstraps `.release-please-manifest.json`** from the target's `package.json` version. release-please-action@v4 requires this file to exist; it does NOT auto-create. Without this fix, the first push after `enroll` fails the Release Please workflow with "Missing required manifest versions". Discovered via live test on agent-id.
+
+### Changed
+- Template `ci.yml` is now language-shape-aware: `typecheck`, `lint`, `conformance` run conditionally on the presence of the corresponding `package.json` script (works for both libraries and CLIs). The build step (`bun build --compile`) only runs when `package.json` declares a `bin`. This avoids regressions on libraries (e.g., agent-id) that have no entry binary.
+
 ## [0.1.3] - 2026-04-27
 
 ### Changed

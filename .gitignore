@@ -6,3 +6,6 @@ agent-fleet.exe
 .env.*
 !.env.example
 .DS_Store
+# fleet.yaml is user-specific (each maintainer's repo list).
+# fleet.yaml.example is the template that ships with the repo.
+fleet.yaml

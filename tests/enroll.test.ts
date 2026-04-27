@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 import { enroll, EnrollError } from '../src/enroll'
-import { mkdtempSync, rmSync, readFileSync, existsSync } from 'node:fs'
+import { mkdtempSync, rmSync, readFileSync, existsSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import type { FleetEntry } from '../src/config'
@@ -69,6 +69,25 @@ describe('enroll', () => {
       for (const rel of expected) {
         expect(existsSync(join(dir, rel))).toBe(true)
       }
+    })
+  })
+
+  test('bootstraps .release-please-manifest.json from target package.json version', () => {
+    withTmpDir((dir) => {
+      writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'x', version: '0.4.2' }))
+      enroll({ ...sampleEntry, path: dir }, TEMPLATES_ROOT)
+      expect(existsSync(join(dir, '.release-please-manifest.json'))).toBe(true)
+      const manifest = JSON.parse(
+        readFileSync(join(dir, '.release-please-manifest.json'), 'utf8'),
+      )
+      expect(manifest).toEqual({ '.': '0.4.2' })
+    })
+  })
+
+  test('skips manifest bootstrap when target has no package.json', () => {
+    withTmpDir((dir) => {
+      enroll({ ...sampleEntry, path: dir }, TEMPLATES_ROOT)
+      expect(existsSync(join(dir, '.release-please-manifest.json'))).toBe(false)
     })
   })
 
