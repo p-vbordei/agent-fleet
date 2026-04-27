@@ -4,6 +4,16 @@ All notable changes to agent-fleet will be documented in this file. Format follo
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-04-27
+
+### Changed
+- **npm package renamed from `agent-fleetctl` to `@p-vbordei/agent-fleet`** now that the `p-vbordei` org exists on npm. The binary name (`agent-fleet`) is unchanged. Install: `npm i -g @p-vbordei/agent-fleet`. The unscoped `agent-fleetctl` is deprecated and points here.
+
+## [0.1.2] - 2026-04-27
+
+### Added
+- `author`, `homepage`, `repository`, `bugs` fields in package.json so the npm page links back to the GitHub source and identifies Vlad Bordei <bordeivlad@gmail.com> as author. No code changes. (This entry was retroactively added; the v0.1.2 git tag exists but this version was never published to npm.)
+
 ## [0.1.1] - 2026-04-27
 
 ### Changed
