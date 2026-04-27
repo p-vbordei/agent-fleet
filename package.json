@@ -1,7 +1,11 @@
 {
   "name": "agent-fleetctl",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Autonomous OSS-repo health for solo maintainers",
+  "author": "Vlad Bordei <bordeivlad@gmail.com>",
+  "homepage": "https://github.com/p-vbordei/agent-fleet",
+  "repository": { "type": "git", "url": "git+https://github.com/p-vbordei/agent-fleet.git" },
+  "bugs": { "url": "https://github.com/p-vbordei/agent-fleet/issues" },
   "type": "module",
   "bin": { "agent-fleet": "./src/index.ts" },
   "scripts": {
